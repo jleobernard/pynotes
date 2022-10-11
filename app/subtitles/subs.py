@@ -2,9 +2,10 @@ import pandas as pd
 import numpy as np
 import logging
 import os
-from re import sub
 from typing import List
 from pathlib import Path
+
+from app.utils.service_utils import Singleton
 
 
 logger = logging.getLogger(__name__) 
@@ -36,10 +37,10 @@ class SubsDbEntry():
         self.tags = tags
 
 
-class SubsClient():
+class SubsClient(metaclass=Singleton):
 
     def __init__(self) -> None:
-        logger.debug("Creating SubsClient")
+        logger.info("Creating SubsClient")
 
     def load_subs(self) -> None:
         logger.info("Loading subtitles...")

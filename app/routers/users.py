@@ -1,13 +1,11 @@
 from fastapi import APIRouter
-from models.users import User
-
-from subtitles.subs import SubsClient
 from fastapi import Depends
-from dependencies import get_db, get_subs_client
 from sqlalchemy.orm import Session
-from crud.users import get_user_by_email
-from models.users import User as UserModel
 
+from app.crud.users import get_user_by_email
+from app.dependencies import get_db
+from app.models.users import User
+from app.models.users import User as UserModel
 
 router = APIRouter(
     tags=['users']
