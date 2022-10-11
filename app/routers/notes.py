@@ -4,11 +4,11 @@ from fastapi import APIRouter
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
-from app.crud.users import get_user_by_email
-from app.dependencies import get_db, get_notes_service
-from app.models.notes import Note as NoteModel
-from app.services.notes import NotesService
-from app.store.schema.note import Note
+from crud.users import get_user_by_email
+from dependencies import get_db, get_notes_service
+from models.notes import Note as NoteModel
+from services.notes import NotesService
+from store.schema.note import Note
 
 router = APIRouter(
     tags=['notes']

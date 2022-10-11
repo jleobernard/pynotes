@@ -1,6 +1,6 @@
 from typing import List
 from sqlalchemy.orm import Session
-from app.store.schema.user import User
+from store.schema.user import User
 
 
 def get_user_by_uri(db: Session, user_uri: int) -> User:

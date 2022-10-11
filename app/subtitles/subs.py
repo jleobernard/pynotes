@@ -5,7 +5,7 @@ import os
 from typing import List
 from pathlib import Path
 
-from app.utils.service_utils import Singleton
+from utils.service_utils import Singleton
 
 
 logger = logging.getLogger(__name__) 

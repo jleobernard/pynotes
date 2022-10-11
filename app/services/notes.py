@@ -2,12 +2,12 @@ from typing import List
 
 from sqlalchemy.orm import Session
 
-from app.services.singleton import Singleton
-from app.models.notes import Note as NoteModel
-from app.crud.notes import get_all, get_note_by_uri
+from services.singleton import Singleton
+from models.notes import Note as NoteModel
+from crud.notes import get_all, get_note_by_uri
 from sentence_transformers import SentenceTransformer
 
-from app.store.schema.note import Note
+from store.schema.note import Note
 
 
 class NotesService(metaclass=Singleton):

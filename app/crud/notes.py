@@ -2,7 +2,7 @@ from typing import List
 
 from sqlalchemy.orm import Session
 
-from app.store.schema.note import Note
+from store.schema.note import Note
 
 
 def get_note_by_uri(db: Session, note_uri: str) -> Note:
