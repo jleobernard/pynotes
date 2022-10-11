@@ -1,9 +1,23 @@
 import logging
+import os
 
 import uvicorn
+from pathlib import Path
 
 # setup loggers
-logging.config.fileConfig('logging.conf', disable_existing_loggers=False)
+main_dir = os.path.dirname(os.path.realpath(__file__))
+parent_dir = Path(main_dir).parent.absolute()
+if os.path.exists(f"{main_dir}/logging.conf"):
+    logging_conf_file = open(f"{main_dir}/logging.conf", mode="r")
+elif os.path.exists(f"{parent_dir}/logging.conf"):
+    logging_conf_file = open(f"{parent_dir}/logging.conf", mode="r")
+else:
+    raise RuntimeError(f"The file logging.conf could not be found in the current directory ({main_dir}) nor in its "
+                       f"parent {parent_dir}")
+try:
+    logging.config.fileConfig(logging_conf_file, disable_existing_loggers=False)
+finally:
+    logging_conf_file.close()
 
 from fastapi import FastAPI
 
