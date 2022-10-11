@@ -49,29 +49,32 @@ class SubsClient(metaclass=Singleton):
         subs_directories = os.listdir(subs_store_path)
         logger.debug(subs_directories)
         for subs_directory in subs_directories:
-            if subs_directory != '.DS_Store':
+            if subs_directory[0] != '.':
                 csv_file = f"{subs_store_path}/{subs_directory}/{subs_directory}.csv"
                 self.__load_subs_entries(csv_file)
     
     def __load_subs_entries(self, csv_file) -> List[SubsDbEntry]:
         logger.info(f"Loading csv file {csv_file}")
         entries: List[SubsDbEntry] = []
-        pth = Path(csv_file)
-        prefix: str = pth.stem
-        df: pd.DataFrame = pd.read_csv(csv_file)
-        nb_columns = len(df)
-        print(nb_columns)
-        for _, row in df.iterrows():
-            tags: List[SentenceElement] = []
-            for i in range(3, len(row), 2):
-                value: str = row[i]
-                if value is np.nan:
-                    break
-                else:
-                    type: str = row[i + 1]
-                    tags.append(SentenceElement(value, type))
-            entries.append(SubsDbEntry(prefix, row['subs'], row['start'], row['end'], tags))
-        logger.info(f"{csv_file} loaded")
+        if os.path.exists(csv_file):
+            pth = Path(csv_file)
+            prefix: str = pth.stem
+            df: pd.DataFrame = pd.read_csv(csv_file)
+            nb_columns = len(df)
+            print(nb_columns)
+            for _, row in df.iterrows():
+                tags: List[SentenceElement] = []
+                for i in range(3, len(row), 2):
+                    value: str = row[i]
+                    if value is np.nan:
+                        break
+                    else:
+                        type: str = row[i + 1]
+                        tags.append(SentenceElement(value, type))
+                entries.append(SubsDbEntry(prefix, row['subs'], row['start'], row['end'], tags))
+            logger.info(f"{csv_file} loaded")
+        else:
+            logger.warning(f"Nothing to load in file {csv_file}")
         return entries
 
 
