@@ -9,4 +9,4 @@ set -o allexport
 source ./.env
 set +o allexport
 
-uvicorn main:app --reload
+uvicorn app.main:app --reload

@@ -10,5 +10,6 @@ RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 FROM python:3.10.7-alpine3.16
 COPY --from=dependencies-install /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
+ENV PYTHONPATH "${PYTHONPATH}:/code/app"
 COPY ./app /code/app
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
