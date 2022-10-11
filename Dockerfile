@@ -11,6 +11,6 @@ FROM python:3.10.7-alpine3.16
 COPY --from=dependencies-install /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 ENV PYTHONPATH "${PYTHONPATH}:/code"
-COPY ./logging.conf /code
+COPY ./logging.conf /code/logging.conf
 COPY ./app /code/app
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
