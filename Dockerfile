@@ -7,6 +7,7 @@ RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 COPY ./app/download_models.py /code/download_models.py
+ENV MODELS_CACHE="/code/models"
 RUN python /code/download_models.py
 
 FROM python:3.10.7-slim
