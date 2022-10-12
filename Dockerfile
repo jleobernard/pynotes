@@ -6,7 +6,7 @@ RUN apt-get install -y --no-install-recommends build-essential gcc curl
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
-COPY ./app/download_models /code/download_models.py
+COPY ./app/download_models.py /code/download_models.py
 RUN python /code/download_models.py
 
 FROM python:3.10.7-slim

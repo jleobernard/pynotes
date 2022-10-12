@@ -28,9 +28,8 @@ class NotesService(metaclass=Singleton):
         sentences: List[str] = self._split_sentences(note)
         print(sentences)
         embeddings = self.model.encode(sentences)
-        print(type(embeddings))
-        print(embeddings)
-        return embeddings
+        print(embeddings.shape)
+        return embeddings.tolist()
 
     def _sanitize_line(self, line: str) -> List[str]:
         sanitized: str = ''.join(xml.etree.ElementTree.fromstring(f"<body>{line}</body>").itertext())
