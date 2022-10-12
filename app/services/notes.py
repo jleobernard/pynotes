@@ -8,6 +8,8 @@ from crud.notes import get_all, get_note_by_uri
 from sentence_transformers import SentenceTransformer
 
 from store.schema.note import Note
+import xml
+import re
 
 
 class NotesService(metaclass=Singleton):
@@ -25,10 +27,27 @@ class NotesService(metaclass=Singleton):
     def compute_embeddings(self, note: NoteModel):
         sentences: List[str] = self._split_sentences(note)
         print(sentences)
-        embeddings = self.model(sentences)
+        embeddings = self.model.encode(sentences)
+        print(type(embeddings))
         print(embeddings)
         return embeddings
 
+    def _sanitize_line(self, line: str) -> List[str]:
+        sanitized: str = ''.join(xml.etree.ElementTree.fromstring(f"<body>{line}</body>").itertext())
+        sanitized = re.sub('\.+', '\n', sanitized)
+        sanitized = sanitized.replace('#', ' ')
+        sanitized = sanitized.strip()
+        sanitized = re.sub('#+', '\n', sanitized)
+        return sanitized.splitlines()
+
     def _split_sentences(self, note: NoteModel) -> List[str]:
-        # Todo change
-        return note.valeur.splitlines()
+        sentences: List[str] = note.valeur.splitlines()
+        sanitized_sentences = []
+        for raw_line in sentences:
+            lines = self._sanitize_line(raw_line)
+            for line in lines:
+                line = line.strip()
+                if line:
+                    sanitized_sentences.append(line)
+        return sanitized_sentences
+
