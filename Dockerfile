@@ -12,7 +12,7 @@ RUN python /code/download_models.py
 
 FROM python:3.10.7-slim
 COPY --from=dependencies-install /opt/venv /opt/venv
-COPY --from=dependencies-install /code/models /code/modes
+COPY --from=dependencies-install /code/models /code/models
 ENV PATH="/opt/venv/bin:$PATH"
 ENV PYTHONPATH "${PYTHONPATH}:/code/app"
 ENV MODELS_CACHE="/code/models"
