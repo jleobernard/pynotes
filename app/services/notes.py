@@ -11,6 +11,9 @@ from store.schema.note import Note
 import xml
 import re
 import os
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class NotesService(metaclass=Singleton):
@@ -26,12 +29,14 @@ class NotesService(metaclass=Singleton):
     def find_note_by_uri(self, note_uri: str, db: Session) -> Note:
         return get_note_by_uri(db, note_uri)
 
-    def compute_embeddings(self, note: NoteModel):
-        sentences: List[str] = self._split_sentences(note)
-        print(sentences)
+    def compute_embeddings(self, sentences: str) -> List[float]:
+        sentences: List[str] = self._split_sentences(sentences)
+        logger.debug("Computing embeddings of %s", sentences)
         embeddings = self.model.encode(sentences)
-        print(embeddings.shape)
         return embeddings.tolist()
+
+    def compute_note_embeddings(self, note: NoteModel) -> List[float]:
+        return self.compute_embeddings(note.valeur)
 
     def _sanitize_line(self, line: str) -> List[str]:
         sanitized: str = ''.join(xml.etree.ElementTree.fromstring(f"<body>{line}</body>").itertext())

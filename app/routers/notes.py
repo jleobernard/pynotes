@@ -26,4 +26,10 @@ async def get_note_embedding(note_uri: str,
                              notes_service: NotesService = Depends(get_notes_service),
                              db: Session = Depends(get_db)) -> List[NoteModel]:
     note: Note = notes_service.find_note_by_uri(note_uri, db)
-    return notes_service.compute_embeddings(note)
+    return notes_service.compute_note_embeddings(note)
+
+
+@router.post("/embeddings")
+async def get_note_embedding(text: str,
+                             notes_service: NotesService = Depends(get_notes_service)) -> List:
+    return notes_service.compute_note_embeddings(text)
