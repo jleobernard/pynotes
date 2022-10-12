@@ -10,13 +10,15 @@ from sentence_transformers import SentenceTransformer
 from store.schema.note import Note
 import xml
 import re
+import os
 
 
 class NotesService(metaclass=Singleton):
     model: SentenceTransformer
 
     def __init__(self):
-        self.model = SentenceTransformer('sentence-transformers/LaBSE')
+        models_cache_dir = os.getenv('MODELS_CACHE')
+        self.model = SentenceTransformer('sentence-transformers/LaBSE', cache_folder=models_cache_dir)
 
     def search(self, db: Session) -> List[NoteModel]:
         return get_all(db, 0, 2)
@@ -49,4 +51,3 @@ class NotesService(metaclass=Singleton):
                 if line:
                     sanitized_sentences.append(line)
         return sanitized_sentences
-
