@@ -55,6 +55,6 @@ async def get_note_embedding(request: EmbeddingComputationRequest,
                              notes_service: NotesService = Depends(get_notes_service)) -> EmbeddingComputationResponse:
     embeddings: List[TextWithEmbeddings] = []
     for text in request.texts:
-        embedding = await notes_service.compute_embeddings(text.text, strategy=strategy).tolist()
-        embeddings.append(TextWithEmbeddings(id=text.id, embeddings=embedding))
+        embedding = await notes_service.compute_embeddings(text.text, strategy=strategy)
+        embeddings.append(TextWithEmbeddings(id=text.id, embeddings=embedding.tolist()))
     return EmbeddingComputationResponse(texts=embeddings)
