@@ -7,6 +7,7 @@ from starlette.background import BackgroundTasks
 
 from crud.users import get_user_by_email
 from dependencies import get_db, get_notes_service
+from models.embeddings import EmbeddingComputationRequest, EmbeddingComputationResponse, TextWithEmbeddings
 from models.notes import Note as NoteModel, NoteBase
 from services.notes import NotesService
 from store.schema.note import Note
@@ -48,8 +49,12 @@ async def get_note_embedding(note_uri: str,
     return notes_service.compute_note_embeddings(note)
 
 
-@router.post("/embeddings")
-async def get_note_embedding(text: str,
+@router.post("/embeddings", response_model=EmbeddingComputationResponse)
+async def get_note_embedding(request: EmbeddingComputationRequest,
                              strategy: str = 'local',
-                             notes_service: NotesService = Depends(get_notes_service)) -> List:
-    return notes_service.compute_embeddings(text, strategy=strategy).tolist()
+                             notes_service: NotesService = Depends(get_notes_service)) -> EmbeddingComputationResponse:
+    embeddings: List[TextWithEmbeddings] = []
+    for text in request.texts:
+        embedding = await notes_service.compute_embeddings(text.text, strategy=strategy).tolist()
+        embeddings.append(TextWithEmbeddings(id=text.id, embeddings=embedding))
+    return EmbeddingComputationResponse(texts=embeddings)
