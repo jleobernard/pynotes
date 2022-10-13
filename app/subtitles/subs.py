@@ -19,7 +19,7 @@ class SentenceElement:
         self.type = type
 
 
-class SubsDbEntry():
+class SubsDbEntry:
     video_name: str
     subs: str
     from_ts: int

@@ -16,9 +16,11 @@ router = APIRouter(
 async def current_user(db: Session = Depends(get_db)) -> User:
     return get_user_by_email(db, user_email='jleobernard@gmail.com')
 
+
 @router.get("/authentication:status")
 async def authentication_status():
     return [{"username": "Rick"}, {"username": "Morty"}]
+
 
 @router.get("/token:refresh")
 async def token_refresh():
