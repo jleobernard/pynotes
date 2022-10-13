@@ -1,8 +1,8 @@
 FROM python:3.10.7-slim AS dependencies-install
 WORKDIR /code
-COPY ./requirements.txt /code/requirements.txt
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends build-essential gcc curl
+COPY ./requirements.txt /code/requirements.txt
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
