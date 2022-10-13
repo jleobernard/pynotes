@@ -7,12 +7,10 @@ from pathlib import Path
 
 from utils.service_utils import Singleton
 
+logger = logging.getLogger(__name__)
 
-logger = logging.getLogger(__name__) 
 
-
-class SentenceElement():
-
+class SentenceElement:
     value: str
     type: str
 
@@ -20,16 +18,15 @@ class SentenceElement():
         self.value = value
         self.type = type
 
-class SubsDbEntry():
 
+class SubsDbEntry():
     video_name: str
     subs: str
     from_ts: int
     to_ts: int
     tags: List[SentenceElement]
 
-
-    def __init__(self,  video_name: str, subs: str, from_ts: int, to_ts: int, tags: List[SentenceElement]) -> None:
+    def __init__(self, video_name: str, subs: str, from_ts: int, to_ts: int, tags: List[SentenceElement]) -> None:
         self.video_name = video_name
         self.subs = subs
         self.from_ts = from_ts
@@ -52,7 +49,7 @@ class SubsClient(metaclass=Singleton):
             if subs_directory[0] != '.':
                 csv_file = f"{subs_store_path}/{subs_directory}/{subs_directory}.csv"
                 self.__load_subs_entries(csv_file)
-    
+
     def __load_subs_entries(self, csv_file) -> List[SubsDbEntry]:
         logger.info(f"Loading csv file {csv_file}")
         entries: List[SubsDbEntry] = []
@@ -76,5 +73,3 @@ class SubsClient(metaclass=Singleton):
         else:
             logger.warning(f"Nothing to load in file {csv_file}")
         return entries
-
-
