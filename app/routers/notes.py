@@ -21,7 +21,7 @@ router = APIRouter(
 async def reload_index(background_tasks: BackgroundTasks,
                        notes_service: NotesService = Depends(get_notes_service),
                        db: Session = Depends(get_db)):
-    background_tasks.add_task(notes_service.load_index, db=db)
+    background_tasks.add_task(notes_service.load_index, force_reload=True, db=db)
     return {"ok": True, "message": "Task running"}
 
 
@@ -46,15 +46,16 @@ async def get_note_embedding(note_uri: str,
                              notes_service: NotesService = Depends(get_notes_service),
                              db: Session = Depends(get_db)) -> List[NoteModel]:
     note: Note = notes_service.find_note_by_uri(note_uri, db)
-    return notes_service.compute_note_embeddings(note)
+    return notes_service.compute_note_embeddings(note, db=db)
 
 
 @router.post("/embeddings", response_model=EmbeddingComputationResponse)
 async def get_note_embedding(request: EmbeddingComputationRequest,
                              strategy: str = 'local',
+                             db: Session = Depends(get_db),
                              notes_service: NotesService = Depends(get_notes_service)) -> EmbeddingComputationResponse:
     embeddings: List[TextWithEmbeddings] = []
     for text in request.texts:
-        embedding = await notes_service.compute_embeddings(text.text, strategy=strategy)
+        embedding = await notes_service.compute_embeddings(text.text, strategy=strategy, db=db)
         embeddings.append(TextWithEmbeddings(id=text.id, embeddings=embedding.tolist()))
     return EmbeddingComputationResponse(texts=embeddings)
