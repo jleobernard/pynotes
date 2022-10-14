@@ -63,7 +63,7 @@ async def get_note_embedding(request: EmbeddingComputationRequest,
 
 
 @router.post('/notes/notifications')
-def receive_messages_handler(request: Request):
+async def receive_messages_handler(request: Request):
     # Verify that the request originates from the application.
     body = await request.json()
     print(f"Received from GCP PUB/SUB : {body}")
