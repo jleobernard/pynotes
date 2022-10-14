@@ -1,11 +1,11 @@
+import logging
 from typing import List
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from fastapi import Depends
 from sqlalchemy.orm import Session
 from starlette.background import BackgroundTasks
 
-from crud.users import get_user_by_email
 from dependencies import get_db, get_notes_service
 from models.embeddings import EmbeddingComputationRequest, EmbeddingComputationResponse, TextWithEmbeddings
 from models.notes import Note as NoteModel, NoteBase
@@ -16,6 +16,7 @@ router = APIRouter(
     tags=['notes']
 )
 
+logger = logging.getLogger(__name__)
 
 @router.get("/notes:reload-index")
 async def reload_index(background_tasks: BackgroundTasks,
@@ -59,3 +60,11 @@ async def get_note_embedding(request: EmbeddingComputationRequest,
         embedding = await notes_service.compute_embeddings(text.text, strategy=strategy, db=db)
         embeddings.append(TextWithEmbeddings(id=text.id, embeddings=embedding.tolist()))
     return EmbeddingComputationResponse(texts=embeddings)
+
+
+@router.post('/notes/notifications')
+def receive_messages_handler(request: Request):
+    # Verify that the request originates from the application.
+    body = request.json()
+    print(f"Received from GCP PUB/SUB : {body}")
+    return {"success": True, "message": "OK"}
