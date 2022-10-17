@@ -18,4 +18,4 @@ ENV PYTHONPATH "${PYTHONPATH}:/code/app"
 ENV MODELS_CACHE="/code/models"
 COPY ./logging.conf /code/logging.conf
 COPY ./app /code/app
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080", "--reload"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
