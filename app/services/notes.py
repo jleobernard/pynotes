@@ -46,7 +46,7 @@ class NotesService(metaclass=Singleton):
             models = db.query(NoteEntity)\
                 .options(load_only(NoteEntity.uri))\
                 .filter(NoteEntity.id.in_(notes_ids)) \
-                .order_by(func.array_position(notes_ids[::-1], NoteEntity.id)) \
+                .order_by(func.array_position(notes_ids, NoteEntity.id)) \
                 .all()
         else:
             models = get_all(db, 0, 2)
