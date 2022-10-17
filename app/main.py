@@ -22,7 +22,6 @@ finally:
 from fastapi import FastAPI
 
 from routers import users, notes
-from dependencies import get_subs_client
 
 app = FastAPI()
 
@@ -38,8 +37,6 @@ logger = logging.getLogger(__name__)  # the __name__ resolve to "main" since we 
 @app.on_event("startup")
 def startup():
     logger.info("Starting up !")
-    subs_client = get_subs_client()
-    subs_client.load_subs()
 
 
 if __name__ == "__main__":

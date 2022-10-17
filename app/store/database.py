@@ -3,11 +3,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-dbhost = os.getenv('NOTES_DB_HOST')
-dbport = os.getenv('NOTES_DB_PORT')
-dbname = os.getenv('NOTES_DB_NAME')
-dbuser = os.getenv('NOTES_DB_USERNAME')
-dbpassword = os.getenv('NOTES_DB_PASSWORD')
+dbhost = os.getenv('PYNOTES_DB_HOST')
+dbport = os.getenv('PYNOTES_DB_PORT')
+dbname = os.getenv('PYNOTES_DB_NAME')
+dbuser = os.getenv('PYNOTES_DB_USERNAME')
+dbpassword = os.getenv('PYNOTES_DB_PASSWORD')
 
 SQLALCHEMY_DATABASE_URL = f"postgresql://{dbuser}:{dbpassword}@{dbhost}:{dbport}/{dbname}"
 

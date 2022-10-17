@@ -1,15 +1,16 @@
+from fastapi import Depends
+
+from crud.notes_reference import NotesReferenceDAO
 from services.notes import NotesService
-from subtitles.subs import SubsClient
 from store.database import SessionLocal
-import os
 
 
-def get_subs_client() -> SubsClient:
-    return SubsClient()
+def get_notes_reference_dao() -> NotesReferenceDAO:
+    return NotesReferenceDAO()
 
 
-def get_notes_service() -> NotesService:
-    return NotesService(strategy=os.getenv('NOTES_SEMANTIC_SEARCH_STRATEGY', default='local'))
+def get_notes_service(notes_reference_dao: NotesReferenceDAO = Depends(get_notes_reference_dao)) -> NotesService:
+    return NotesService(notes_reference_dao=notes_reference_dao)
 
 
 # Dependency

@@ -1,3 +1,4 @@
+import json
 import logging
 from typing import List
 
@@ -10,7 +11,8 @@ from dependencies import get_db, get_notes_service
 from models.embeddings import EmbeddingComputationRequest, EmbeddingComputationResponse, TextWithEmbeddings
 from models.notes import Note as NoteModel, NoteBase
 from services.notes import NotesService
-from store.schema.note import Note
+from store.schema.noteentity import NoteEntity
+import base64
 
 router = APIRouter(
     tags=['notes']
@@ -41,14 +43,6 @@ async def search_notes(q: str | None,
     return await notes_service.search(db=db, q=q, offset=offset, count=count)
 
 
-@router.get("/notes/{note_uri}/embeddings")
-async def get_note_embedding(note_uri: str,
-                             strategy: str = 'local',
-                             notes_service: NotesService = Depends(get_notes_service),
-                             db: Session = Depends(get_db)) -> List[NoteModel]:
-    note: Note = notes_service.find_note_by_uri(note_uri, db)
-    return notes_service.compute_note_embeddings(note, db=db)
-
 
 @router.post("/embeddings", response_model=EmbeddingComputationResponse)
 async def get_note_embedding(request: EmbeddingComputationRequest,
@@ -57,14 +51,18 @@ async def get_note_embedding(request: EmbeddingComputationRequest,
                              notes_service: NotesService = Depends(get_notes_service)) -> EmbeddingComputationResponse:
     embeddings: List[TextWithEmbeddings] = []
     for text in request.texts:
-        embedding = await notes_service.compute_embeddings(text.text, strategy=strategy, db=db)
+        embedding = await notes_service.compute_embeddings(text.text)
         embeddings.append(TextWithEmbeddings(id=text.id, embeddings=embedding.tolist()))
     return EmbeddingComputationResponse(texts=embeddings)
 
 
 @router.post('/notes/notifications')
-async def receive_messages_handler(request: Request):
+async def receive_messages_handler(request: Request, background_tasks: BackgroundTasks,
+                                   db: Session = Depends(get_db),
+                                   notes_service: NotesService = Depends(get_notes_service)):
     # Verify that the request originates from the application.
     body = await request.json()
-    print(f"Received from GCP PUB/SUB : {body}")
+    encoded_message = body['message']['data']
+    payload = json.loads(base64.b64decode(encoded_message))
+    background_tasks.add_task(notes_service.handle_pubsub_message, payload=payload, db=db)
     return {"success": True, "message": "OK"}

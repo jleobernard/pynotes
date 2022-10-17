@@ -3,7 +3,6 @@ from pydantic import BaseModel
 
 class NoteBase(BaseModel):
     uri: str
-    valeur: str
 
     class Config:
         orm_mode = True
@@ -14,3 +13,8 @@ class Note(NoteBase):
 
     class Config:
         orm_mode = True
+
+
+class NoteReferential(BaseModel):
+    uri: str
+    valeur: str
