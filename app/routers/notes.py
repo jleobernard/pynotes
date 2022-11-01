@@ -43,7 +43,6 @@ async def search_notes(q: str | None,
     return await notes_service.search(db=db, q=q, offset=offset, count=count)
 
 
-
 @router.post("/embeddings", response_model=EmbeddingComputationResponse)
 async def get_note_embedding(request: EmbeddingComputationRequest,
                              strategy: str = 'local',

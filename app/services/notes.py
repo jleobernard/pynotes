@@ -124,7 +124,7 @@ class NotesService(metaclass=Singleton):
                 return np.array(answer['texts'][0]['embeddings']).astype(np.float32)
 
     async def handle_pubsub_message(self, payload: dict, db: Session):
-        message_type: str = payload.get('type', '')
+        message_type: str = payload.get('type', '').lower()
         note_uri: str = payload.get('uri', '')
         match message_type:
             case 'upsert':
@@ -151,6 +151,7 @@ class NotesService(metaclass=Singleton):
         embeddings: np.ndarray = await self.compute_embeddings(sentences=ref_note.valeur)
         note.sentence_embeddings = embeddings
         db.commit()
+        await self.load_index(db=db, force_reload=False)
         with self.lock:
             self.index.add(embeddings)
             self.embedding_index_to_note_id.extend([note.id] * embeddings.shape[0])
