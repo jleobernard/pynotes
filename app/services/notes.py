@@ -194,6 +194,6 @@ class NotesService(metaclass=Singleton):
                 else:
                     break
             except BaseException as err:
-                logger.error(f"Error while fetching notes at offset {offset}\n{err}")
+                logger.error(f"Error while fetching notes at url offset {offset}\n{err=}")
                 break
         db.commit()
