@@ -20,6 +20,7 @@ from models.embeddings import EmbeddingComputationRequest, TextReference, Embedd
 from models.notes import Note as NoteModel, NoteReferential
 from services.singleton import Singleton
 from store.schema.noteentity import NoteEntity
+from utils.constants import REPLACEMENTS
 
 logger = logging.getLogger(__name__)
 
@@ -62,6 +63,8 @@ class NotesService(metaclass=Singleton):
         return embeddings
 
     def _sanitize_line(self, line: str) -> List[str]:
+        for (replaced, replacement) in REPLACEMENTS:
+            line = line.replace(replaced, replacement)
         sanitized: str = ''.join(xml.etree.ElementTree.fromstring(f"<body>{line}</body>").itertext())
         sanitized = re.sub('\.+', '\n', sanitized)
         sanitized = sanitized.replace('#', ' ')
